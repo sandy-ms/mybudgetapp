@@ -1,15 +1,31 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const AuthenticationScreen = () => {
+const AuthenticationScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const saveAuthenticationInfo = async (token, userId) => {
+        try {
+            await AsyncStorage.setItem('token', token);
+            await AsyncStorage.setItem('userId', userId);
+            console.log('Authentication information saved successfully');
+            setEmail('')
+            setPassword('')
+        } catch (error) {
+            console.log('Failed to save authentication information', error);
+        }
+    };
+
 
     const handleLogin = () => {
         // Perform login logic here (e.g., send login request to server)
         console.log('Login button pressed');
         console.log('Email:', email);
         console.log('Password:', password);
+        saveAuthenticationInfo(email, password)
+        navigation.navigate('Tab')
     };
 
     return (
